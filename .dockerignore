@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.so
+.env
+.env.*
+.cache/
+*.log
+htmlcov/
+poetry.lock.backup
+.ipynb_checkpoints/
+tests/
