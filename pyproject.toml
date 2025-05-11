@@ -28,6 +28,9 @@ name = "piknlp-server"
 version = "0.1.0"
 description = "Sentiment-based travel recommender system"
 authors = ["HuSngYn <huseongyoon@gmail.com>"]
+packages = [
+    { include = "app" }
+]
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
