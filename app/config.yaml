@@ -1,5 +1,5 @@
 model:
-  name: "app/models/koelectra-small-v3"
+  name: "HuSnYn/pik-electra"
   tokenizer_name: "monologg/koelectra-small-v3-discriminator"
   max_length: 128
   device: "cuda"  # "cuda" 또는 "cpu"
