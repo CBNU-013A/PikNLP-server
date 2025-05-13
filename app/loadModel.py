@@ -1,7 +1,6 @@
 from transformers import ElectraTokenizer, ElectraForSequenceClassification
 import torch
 import yaml
-import json
 import os
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -26,11 +25,10 @@ class ModelLoader:
         self.model.to(self.device)
         
         # 모델의 카테고리 매핑 로드
-        model_config_path = os.path.join(self.model_name, "config.json")
-        with open(model_config_path, 'r') as f:
-            model_config = json.load(f)
-            self.id2label = model_config['id2label']
-            self.label2id = model_config['label2id']
+        from transformers import AutoConfig
+        model_config = AutoConfig.from_pretrained(self.model_name)
+        self.id2label = model_config.id2label
+        self.label2id = model_config.label2id
             
         # 감성 레이블 매핑
         self.sentiment_map = {0: "pos", 1: "neg", 2: "none"}
