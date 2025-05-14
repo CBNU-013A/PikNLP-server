@@ -31,6 +31,11 @@ jobs:
         mkdir -p logs
         touch logs/server.log
 
+    - name: Set up .env for test
+      run: |
+        echo "API_KEY=${{ secrets.TEST_API_KEY }}" > .env
+        echo "ENV=test" >> .env
+
     - name: Run tests
       run: |
         poetry run pytest --cov=app --cov=tests --cov-report=term --cov-report=xml
