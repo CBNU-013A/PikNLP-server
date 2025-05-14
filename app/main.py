@@ -4,8 +4,10 @@ from .loadModel import model_loader
 import torch
 import logging
 import os
-from dotenv import load_dotenv
-load_dotenv()
+
+if "ENV" not in os.environ:
+    from dotenv import load_dotenv
+    load_dotenv()
 
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
@@ -30,8 +32,8 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-def verify_api_key(x_api_key: str = Header(...)):
-    if x_api_key != os.getenv("API_KEY"):
+def verify_api_key(nlp_api_key: str = Header(...)):
+    if nlp_api_key != os.getenv("API_KEY"):
         logger.warning("⚠️ Invalid API key provided.")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -65,6 +67,13 @@ def health():
         "cuda_available": torch.cuda.is_available(),
         "API-MODE": os.getenv("ENV")
         }
+
+if os.getenv("ENV") == "test":
+    logger.info("Test mode enabled. add /error endpoint.")
+    @app.get("/error")
+    def raise_error():
+        logger.info("GET /error - Raising an error for testing.")
+        raise Exception("intentional error for testing")
 
 app.include_router(inference_router, prefix="/api/v1", dependencies=[Depends(verify_api_key)])
 
