@@ -6,7 +6,7 @@ import logging
 
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
-from fastapi.exception_handlers import http_exception_handler
+from fastapi.exception_handlers import request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
 
 logging.basicConfig(
@@ -38,7 +38,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     logger.warning("Validation error: %s", exc.errors())
-    return http_exception_handler(request, exc)
+    return await request_validation_exception_handler(request, exc)
 
 @app.get("/")
 def top():

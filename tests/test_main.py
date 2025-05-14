@@ -56,7 +56,7 @@ async def test_predict_empty_text():
 
 @pytest.mark.asyncio
 async def test_predict_internel_error(monkeypatch):
-    with patch("app.inference.model_loder.predict", new_callable=AsyncMock) as mock_predict:
+    with patch("app.inference.model_loader.predict", new_callable=AsyncMock) as mock_predict:
         mock_predict.side_effect = RuntimeError("some error")
 
         async with LifespanManager(app):

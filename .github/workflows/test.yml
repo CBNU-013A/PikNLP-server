@@ -25,6 +25,11 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
+    
+    - name: Prepare logs directory
+      run: |
+        mkdir -p logs
+        touch logs/server.log
 
     - name: Run tests
       run: |
