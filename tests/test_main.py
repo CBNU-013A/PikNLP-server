@@ -1,7 +1,9 @@
+# tests/test_main.py
 import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import app
 from asgi_lifespan import LifespanManager
+from unittest.mock import patch, AsyncMock
 
 
 @pytest.mark.asyncio
@@ -43,3 +45,23 @@ async def test_predict_cases(text):
     json_data = response.json()
     assert "sentiments" in json_data
     assert isinstance(json_data["sentiments"], dict)
+
+@pytest.mark.asyncio
+async def test_predict_empty_text():
+    '''validation Error'''
+    async with LifespanManager(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            response = await ac.post("/api/v1/predict")
+    assert response.status_code == 422
+
+@pytest.mark.asyncio
+async def test_predict_internel_error(monkeypatch):
+    with patch("app.inference.model_loder.predict", new_callable=AsyncMock) as mock_predict:
+        mock_predict.side_effect = RuntimeError("some error")
+
+        async with LifespanManager(app):
+            async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+                response = await ac.post("/api/v1/predict", json={"text": "서비스 최악"})
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Internal Server Error"
