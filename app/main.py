@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Header, HTTPException, status
 from .inference import router as inference_router
 from .loadModel import model_loader
 import torch
 import logging
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
@@ -26,6 +29,14 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != os.getenv("API_KEY"):
+        logger.warning("⚠️ Invalid API key provided.")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API key",
+        )
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -54,7 +65,7 @@ def health():
         "cuda_available": torch.cuda.is_available()
         }
 
-app.include_router(inference_router, prefix="/api/v1")
+app.include_router(inference_router, prefix="/api/v1", dependencies=[Depends(verify_api_key)])
 
 if __name__ == "__main__":
     import uvicorn

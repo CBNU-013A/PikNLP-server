@@ -5,6 +5,7 @@ from app.main import app
 from asgi_lifespan import LifespanManager
 from unittest.mock import patch, AsyncMock
 
+API_KEY = "test-key"
 
 @pytest.mark.asyncio
 async def test_top():
@@ -40,7 +41,7 @@ async def test_predict_cases(text):
     sample_input = {"text": text}
     async with LifespanManager(app):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            response = await ac.post("/api/v1/predict", json=sample_input)
+            response = await ac.post("/api/v1/predict", json=sample_input, headers={"X-API-KEY": API_KEY})
     assert response.status_code == 200
     json_data = response.json()
     assert "sentiments" in json_data
@@ -51,7 +52,7 @@ async def test_predict_empty_text():
     '''validation Error'''
     async with LifespanManager(app):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-            response = await ac.post("/api/v1/predict")
+            response = await ac.post("/api/v1/predict", headers={"X-API-KEY": API_KEY})
     assert response.status_code == 422
 
 @pytest.mark.asyncio
@@ -61,7 +62,7 @@ async def test_predict_internel_error(monkeypatch):
 
         async with LifespanManager(app):
             async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-                response = await ac.post("/api/v1/predict", json={"text": "서비스 최악"})
+                response = await ac.post("/api/v1/predict", json={"text": "서비스 최악"}, headers={"X-API-KEY": API_KEY})
 
     assert response.status_code == 500
     assert response.json()["detail"] == "Internal Server Error"
