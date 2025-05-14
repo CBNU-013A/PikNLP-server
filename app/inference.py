@@ -13,7 +13,6 @@ async def predict(request: PredictRequest):
     logger.info("POST /predict - text received: %s", request)
     try:
         result = await model_loader.predict(request.text)
-        logger.info("POST /predict - prediction result: %s", result)
         return PredictResponse(sentiments=result)
     except Exception as e:
         logger.exception("POST /predict - error during prediction: %s", e)

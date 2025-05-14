@@ -96,7 +96,7 @@ class ModelLoader:
         results = {}
         for category, sentiment in await asyncio.gather(*tasks):
             results[category] = sentiment
-        logger.info("✅ Completed prediction: %s", results)
+        logger.info("✅ Completed prediction")
             
         return results
 

@@ -11,3 +11,5 @@ models/
 
 # VSCode
 .vscode/
+
+logs/
