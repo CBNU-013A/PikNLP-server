@@ -1,0 +1,14 @@
+model:
+  name: "HuSnYn/pik-electra"
+  tokenizer_name: "monologg/koelectra-small-v3-discriminator"
+  max_length: 128
+  device: "cuda"  # "cuda" 또는 "cpu"
+
+labels:
+  pos: 0
+  neg: 1
+  none: 2
+
+inference:
+  batch_size: 1
+  num_workers: 4 
