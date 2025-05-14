@@ -23,7 +23,7 @@ GPU(pytorch:2.7.0-cuda12.6-cudnn9-runtime) 사용
 
 ```bash
 docker build -t piknlp-server .
-docker run -p 18000:18000 piknlp-server
+docker run --gpus all -p 18000:18000 --env-file .env piknlp-server:latest
 ```
 
 
@@ -39,7 +39,8 @@ docker run -p 18000:18000 piknlp-server
   "status": "ok",
   "model_loaded": true,
   "device": "cuda",
-  "cuda_available": true
+  "cuda_available": true,
+  "API-MODE": "production"
 }
 ```
 

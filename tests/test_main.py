@@ -4,6 +4,7 @@ from httpx import AsyncClient, ASGITransport
 from app.main import app
 from asgi_lifespan import LifespanManager
 from unittest.mock import patch, AsyncMock
+import os
 
 API_KEY = "test-key"
 
@@ -27,6 +28,8 @@ async def test_health():
     assert "model_loaded" in json_data
     assert "device" in json_data
     assert "cuda_available" in json_data
+    assert "API-MODE" in json_data
+    assert json_data["API-MODE"] == os.getenv("ENV")
 
 
 @pytest.mark.asyncio

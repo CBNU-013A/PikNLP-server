@@ -62,7 +62,8 @@ def health():
         "status": "ok",
         "model_loaded": model_loader.model is not None,
         "device": str(model_loader.device),
-        "cuda_available": torch.cuda.is_available()
+        "cuda_available": torch.cuda.is_available(),
+        "API-MODE": os.getenv("ENV")
         }
 
 app.include_router(inference_router, prefix="/api/v1", dependencies=[Depends(verify_api_key)])
