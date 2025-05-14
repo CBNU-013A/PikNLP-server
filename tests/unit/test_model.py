@@ -1,4 +1,6 @@
+# tests/unit/test_model.py
 from app.loadModel import ModelLoader
+from unittest.mock import patch, AsyncMock
 import torch
 import pytest
 import asyncio
@@ -38,4 +40,5 @@ async def test_predict_output_structure():
 
     assert isinstance(result, dict)
     assert all(label in {"pos", "neg", "none"} for label in result.values())
+
 
