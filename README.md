@@ -14,7 +14,7 @@ poetry install
 # 2. 서버 실행(port=18000)
 poetry run python run.py
 # or
-poetry run uvicorn app.main:app <port 세팅>
+poetry run uvicorn app.main:app <port>
 ```
 
 ### Docker
@@ -23,7 +23,7 @@ GPU(pytorch:2.7.0-cuda12.6-cudnn9-runtime) 사용
 
 ```bash
 docker build -t piknlp-server .
-docker run --gpus all -p 18000:18000 --env-file .env piknlp-server:latest
+docker run --gpus all -p <port> --env-file .env piknlp-server:latest
 ```
 
 
@@ -76,5 +76,32 @@ docker run --gpus all -p 18000:18000 --env-file .env piknlp-server:latest
     "시설": "none",
     "자연": "pos"
   }
+}
+
+```
+
+### 3. `GET /api/v1/categories`
+
+- 모델에서 분석할 카테고리 목록 확인
+
+#### ✅ 응답 예시
+
+```json
+{
+  "categories": [
+    "가격",
+    "가족",
+    "역사",
+    "접근성",
+    "사진",
+    "경관",
+    "계절",
+    "공원",
+    "문화",
+    "체험",
+    "음식",
+    "시설",
+    "자연"
+  ]
 }
 ```
