@@ -102,9 +102,9 @@ async def test_get_categories():
             response = await ac.get("/api/v1/categories", headers={"NLP-API-KEY": API_KEY})
     assert response.status_code == 200
     json_data = response.json()
-    assert isinstance(json_data, list)
-    assert len(json_data) > 0
-    assert all(isinstance(cat, str) for cat in json_data)
+    assert "categories" in json_data
+    assert isinstance(json_data["categories"], list)
+    assert len(json_data["categories"]) > 0
 
 @pytest.mark.asyncio
 async def test_get_categories_internal_error(monkeypatch):
