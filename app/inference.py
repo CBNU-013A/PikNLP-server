@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from .schema import PredictRequest, PredictResponse
+from .schema import PredictRequest, PredictResponse, CategoriesResponse
 from .loadModel import model_loader
 import logging
 
@@ -16,4 +16,14 @@ async def predict(request: PredictRequest):
         return PredictResponse(sentiments=result)
     except Exception as e:
         logger.exception("POST /predict - error during prediction: %s", e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@router.get("/categories", response_model=CategoriesResponse)
+async def get_categories():
+    logger.info("GET /categories - fetching categories")
+    try:
+        categories = await model_loader.get_categories()
+        return CategoriesResponse(categories=categories)
+    except Exception as e:
+        logger.exception("GET /categories - error fetching categories: %s", e)
         raise HTTPException(status_code=500, detail="Internal Server Error")

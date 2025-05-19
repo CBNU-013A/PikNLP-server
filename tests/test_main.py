@@ -94,3 +94,26 @@ async def test_global_exception_handler():
             except Exception as e:
                 # 일부 환경에 따라 FastAPI 내부에서 raise된 예외가 그대로 pytest까지 전파될 수 있음
                 print(f"Expected exception occurred (handled by FastAPI): {e}")
+
+@pytest.mark.asyncio
+async def test_get_categories():
+    async with LifespanManager(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+            response = await ac.get("/api/v1/categories", headers={"NLP-API-KEY": API_KEY})
+    assert response.status_code == 200
+    json_data = response.json()
+    assert "categories" in json_data
+    assert isinstance(json_data["categories"], list)
+    assert len(json_data["categories"]) > 0
+
+@pytest.mark.asyncio
+async def test_get_categories_internal_error(monkeypatch):
+    with patch("app.inference.model_loader.get_categories", new_callable=AsyncMock) as mock_get_categories:
+        mock_get_categories.side_effect = RuntimeError("some error")
+
+        async with LifespanManager(app):
+            async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+                response = await ac.get("/api/v1/categories", headers={"NLP-API-KEY": API_KEY})
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Internal Server Error"

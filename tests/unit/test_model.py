@@ -1,9 +1,13 @@
 # tests/unit/test_model.py
 from app.loadModel import ModelLoader
+from app.main import app
 from unittest.mock import patch, AsyncMock
+from fastapi.testclient import TestClient
 import torch
 import pytest
 import asyncio
+
+client = TestClient(app)
 
 def test_convert_to_feature_structure():
     model_loader = ModelLoader()
@@ -42,3 +46,12 @@ async def test_predict_output_structure():
     assert all(label in {"pos", "neg", "none"} for label in result.values())
 
 
+@pytest.mark.asyncio
+async def test_get_categories():
+    model_loader = ModelLoader()
+    categories = await model_loader.get_categories()
+
+    assert isinstance(categories, list)
+    assert all(isinstance(cat, str) for cat in categories)
+    assert len(categories) > 0
+    assert all(cat in model_loader.id2label.values() for cat in categories)

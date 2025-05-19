@@ -99,6 +99,13 @@ class ModelLoader:
         logger.info("✅ Completed prediction")
             
         return results
+    
+    async def get_categories(self) -> list[str]:
+        logger.info("Fetching categories")
+        # 카테고리 목록 반환
+        categories = list(self.id2label.values())
+        logger.info("✅ Fetched categories: %s", categories)
+        return categories
 
 # 싱글톤 인스턴스 생성
 model_loader = ModelLoader()
