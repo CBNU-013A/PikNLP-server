@@ -17,3 +17,13 @@ async def predict(request: PredictRequest):
     except Exception as e:
         logger.exception("POST /predict - error during prediction: %s", e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@router.get("/categories", response_model=list[str])
+async def get_categories():
+    logger.info("GET /categories - fetching categories")
+    try:
+        categories = await model_loader.get_categories()
+        return categories
+    except Exception as e:
+        logger.exception("GET /categories - error fetching categories: %s", e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
