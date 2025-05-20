@@ -14,3 +14,6 @@ models/
 
 logs/
 .env*
+
+# Train
+data/

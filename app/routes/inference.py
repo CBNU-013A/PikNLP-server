@@ -1,10 +1,9 @@
+# /app/routes/inference.py
+
 from fastapi import APIRouter, HTTPException
-from .schema import PredictRequest, PredictResponse, CategoriesResponse
-from .loadModel import model_loader
-import logging
-
-
-logger = logging.getLogger(__name__)
+from ..core.logger import logger
+from ..schemas.inference_schema import PredictRequest, PredictResponse, CategoriesResponse
+from ..services.inference_runner import model_loader
 
 router = APIRouter()
 
