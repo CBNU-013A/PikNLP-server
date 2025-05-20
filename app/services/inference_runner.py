@@ -1,14 +1,15 @@
+# /app/services/inference_runner.py
+
 from transformers import ElectraTokenizer, ElectraForSequenceClassification
 import torch
 import yaml
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-import logging
 
-logger = logging.getLogger(__name__)
+from ..core.logger import logger
 
 class ModelLoader:
-    def __init__(self, config_path: str = "app/config.yaml"):
+    def __init__(self, config_path: str = "app/services/config.yaml"):
         # config 파일 로드
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
@@ -42,6 +43,10 @@ class ModelLoader:
         logger.info("✅ ModelLoader initialized successfully.")
 
     def convert_to_feature(self, text: str, category: str):
+        # 입력값 검증
+        if not isinstance(text, str) or not isinstance(category, str):
+            raise ValueError("text and category must be strings")
+
         max_length = self.config['model']['max_length']
         encoded = self.tokenizer(
             text=text,
@@ -85,6 +90,9 @@ class ModelLoader:
         return category, sentiment
         
     async def predict(self, text: str) -> dict:
+        # 입력값 검증
+        if not isinstance(text, str):
+            raise ValueError("text must be a string")
         logger.info("Starting prediction for text: %s", text)
         # 모든 카테고리에 대해 병렬로 추론 수행
         tasks = [
