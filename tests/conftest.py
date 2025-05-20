@@ -7,6 +7,8 @@ from httpx import AsyncClient, ASGITransport
 from asgi_lifespan import LifespanManager
 from fastapi.testclient import TestClient
 
+load_dotenv()
+
 os.environ["ENV"] = "test"
 API_KEY = os.getenv("API_KEY")
 

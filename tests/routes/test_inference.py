@@ -4,7 +4,7 @@ import os
 import pytest
 from unittest.mock import patch, AsyncMock
 
-API_KEY = os.getenv("API_KEY", "test")
+API_KEY = os.getenv("API_KEY")
 
 # TC01: POST /predict
 
